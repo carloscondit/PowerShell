@@ -68,8 +68,9 @@ if ((!$psISE) -and ((Get-Module PSReadline).version -ge '2.2.0')) {
 # А про изменение самой строки приглашения: https://xaegr.wordpress.com/2009/06/01/myprofile/
 
 if ((Get-Date).Month -eq 12 -AND (Get-Date).Day -gt 11) {
-  #Добавляем скрипт с функциями конвертирования эмоджи
-  . C:\Distr\Scripts\Fun\PSEmoji.ps1
+  #При необходимости добавляем скрипт с функциями конвертирования эмоджи
+  # Подробнее тут: https://gist.github.com/jdhitsolutions/31e20c58645b59e42725f0aac0297b6f
+  #. C:\Distr\Scripts\Fun\PSEmoji.ps1
   
   #load the Christmas prompt
   
@@ -83,7 +84,7 @@ if ((Get-Date).Month -eq 12 -AND (Get-Date).Day -gt 11) {
     $timestring = $time.ToString("dd' дней и 'hh':'mm':'ss")
     
     #Получаем рандомную строку из декоративных символов
-    #Можно указать конкретный эмоджи или сконвертировать из значений
+    #Можно указать конкретный эмоджи или сконвертировать из значений, если доступна функция ConvertTo-Emoji
     # $Snow = ""
     # $shootingStar = ConvertTo-Emoji 127776
     $snow = "❄"
