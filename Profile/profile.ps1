@@ -83,46 +83,48 @@ if ((Get-Date).Month -eq 12 -AND (Get-Date).Day -gt 11) {
     #Превращаем это время в строку без милисекунд
     $timestring = $time.ToString("dd' дней и 'hh':'mm':'ss")
     
-    #Получаем рандомную строку из декоративных символов
-    #Можно указать конкретный эмоджи или сконвертировать из значений, если доступна функция ConvertTo-Emoji
-    # $Snow = ""
-    # $shootingStar = ConvertTo-Emoji 127776
-    $snow = "❄"
-    $sparkles = "✨"
-    $snowman = "⛄"
-    $santa = "🎅"
-    $mrsClaus = "🤶"
-    $tree = "🎄"
-    $present = "🎁"
-    $notes = "🎵"
-    $bow = "🎀"
-    $star = "🌟"
-    $shootingStar = "🌠"
-    $myChars = $santa, $mrsClaus, $tree, $present, $notes, $bow, $star, $shootingStar, $snow, $snowman, $sparkles
-    #Получаем несколько рандомных символов 
-    $front = -join ($myChars | Get-Random -Count 2)
-    $back = -join ($myChars | Get-Random -Count 2)
-    
-    #Формируем саму строку
-    $text = "Новый год наступит через $timestring"
-    
-    #Получаем каждый символ из строки и рандомно назначаем ему цвет из ANSI последовательности
-    $colorText = $text.tocharArray() | ForEach-Object {
-      $i = Get-Random -Minimum 1 -Maximum 50
-      switch ($i) {
-        { $i -le 50 -AND $i -ge 45 } { $seq = "$([char]0x1b)[1;5;38;5;199m" }
-        { $i -le 45 -AND $i -ge 40 } { $seq = "$([char]0x1b)[1;5;38;11;199m" }
-        { $i -le 40 -AND $i -ge 30 } { $seq = "$([char]0x1b)[1;38;5;50m" }
-        { $i -le 20 -and $i -gt 15 } { $seq = "$([char]0x1b)[1;5;38;5;1m" }
-        { $i -le 16 -and $i -gt 10 } { $seq = "$([char]0x1b)[1;38;5;47m" }
-        { $i -le 10 -and $i -gt 5 } { $seq = "$([char]0x1b)[1;5;38;5;2m" }
-        default { $seq = "$([char]0x1b)[1;37m" }
-      }
-      "$seq$_$([char]0x1b)[0m"
-    } #foreach
-    
-    #Пишем эту строку в консоль на отдельную линию
-    Write-Host "$front $($colortext -join '') $back" #-NoNewline #-foregroundcolor $color
+    if ($env:wt_Session -OR ($host.name -match "studio")) {
+      #Получаем рандомную строку из декоративных символов
+      #Можно указать конкретный эмоджи или сконвертировать из значений, если доступна функция ConvertTo-Emoji
+      # $Snow = ""
+      # $shootingStar = ConvertTo-Emoji 127776
+      $snow = "❄"
+      $sparkles = "✨"
+      $snowman = "⛄"
+      $santa = "🎅"
+      $mrsClaus = "🤶"
+      $tree = "🎄"
+      $present = "🎁"
+      $notes = "🎵"
+      $bow = "🎀"
+      $star = "🌟"
+      $shootingStar = "🌠"
+      $myChars = $santa, $mrsClaus, $tree, $present, $notes, $bow, $star, $shootingStar, $snow, $snowman, $sparkles
+      #Получаем несколько рандомных символов 
+      $front = -join ($myChars | Get-Random -Count 2)
+      $back = -join ($myChars | Get-Random -Count 2)
+      
+      #Формируем саму строку
+      $text = "Новый год наступит через $timestring"
+      
+      #Получаем каждый символ из строки и рандомно назначаем ему цвет из ANSI последовательности
+      $colorText = $text.tocharArray() | ForEach-Object {
+        $i = Get-Random -Minimum 1 -Maximum 50
+        switch ($i) {
+          { $i -le 50 -AND $i -ge 45 } { $seq = "$([char]0x1b)[1;5;38;5;199m" }
+          { $i -le 45 -AND $i -ge 40 } { $seq = "$([char]0x1b)[1;5;38;11;199m" }
+          { $i -le 40 -AND $i -ge 30 } { $seq = "$([char]0x1b)[1;38;5;50m" }
+          { $i -le 20 -and $i -gt 15 } { $seq = "$([char]0x1b)[1;5;38;5;1m" }
+          { $i -le 16 -and $i -gt 10 } { $seq = "$([char]0x1b)[1;38;5;47m" }
+          { $i -le 10 -and $i -gt 5 } { $seq = "$([char]0x1b)[1;5;38;5;2m" }
+          default { $seq = "$([char]0x1b)[1;37m" }
+        }
+        "$seq$_$([char]0x1b)[0m"
+      } #foreach
+      
+      #Пишем эту строку в консоль на отдельную линию
+      Write-Host "$front $($colortext -join '') $back" #-NoNewline #-foregroundcolor $color
+    } #if Host is Windows Terminal or VS code
     
     [Environment]::CurrentDirectory = (Get-Location -PSProvider FileSystem).ProviderPath            
     $path = (Get-Location).path -replace '^(.*?[^:]:\\).+(\\.+?)$', ('$1' + [char]8230 + '$2') -replace '^.+?::' -replace '^(\\\\.+?\\).+(\\.+?)$', ('$1' + [char]8230 + '$2')            
