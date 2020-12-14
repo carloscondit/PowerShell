@@ -85,19 +85,18 @@ if ((Get-Date).Month -eq 12 -AND (Get-Date).Day -gt 11) {
     #Получаем рандомную строку из декоративных символов
     #Можно указать конкретный эмоджи или сконвертировать из значений
     # $Snow = ""
-    $snow = ConvertTo-Emoji 0x2744
-    # $sparkles = ""
-    $sparkles = ConvertTo-Emoji 0x2728
-    #$snowman = ""
-    $snowman = ConvertTo-Emoji 0x26C4
-    $santa = ConvertTo-Emoji 0x1F385
-    $mrsClaus = ConvertTo-Emoji 0x1F936
-    $tree = ConvertTo-Emoji 0x1F384
-    $present = ConvertTo-Emoji 0x1F381
-    $notes = ConvertTo-Emoji 0x1F3B5
-    $bow = ConvertTo-Emoji 0x1F380
-    $star = ConvertTo-Emoji 127775
-    $shootingStar = ConvertTo-Emoji 127776
+    # $shootingStar = ConvertTo-Emoji 127776
+    $snow = "❄"
+    $sparkles = "✨"
+    $snowman = "⛄"
+    $santa = "🎅"
+    $mrsClaus = "🤶"
+    $tree = "🎄"
+    $present = "🎁"
+    $notes = "🎵"
+    $bow = "🎀"
+    $star = "🌟"
+    $shootingStar = "🌠"
     $myChars = $santa, $mrsClaus, $tree, $present, $notes, $bow, $star, $shootingStar, $snow, $snowman, $sparkles
     #Получаем несколько рандомных символов 
     $front = -join ($myChars | Get-Random -Count 2)
