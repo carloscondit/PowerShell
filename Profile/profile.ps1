@@ -72,8 +72,6 @@ if ((Get-Date).Month -eq 12 -AND (Get-Date).Day -gt 11) {
   # Подробнее тут: https://gist.github.com/jdhitsolutions/31e20c58645b59e42725f0aac0297b6f
   #. C:\Distr\Scripts\Fun\PSEmoji.ps1
   
-  #load the Christmas prompt
-  
   Function Prompt {
     #Получаем следующий год
     $year = ((get-date).AddYears(1)).Year
