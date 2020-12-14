@@ -1,5 +1,5 @@
 ﻿# Устанавливаем корневую папку            
-$Root = "c:\Distr"             
+$Root = "C:\Distr"             
             
 # Переходим в каталог со скриптами           
 Set-Location "$Root\Scripts"             
@@ -17,8 +17,8 @@ foreach ($sid in [Security.Principal.WindowsIdentity]::GetCurrent().Groups) {
 }
 
 # Добавляем папки с утилитами в $env:path            
-"$Root","$Root\Scripts" | ForEach-Object {            
-  Write-Verbose "`t$_"            
+"$Root", "$Root\Scripts" | ForEach-Object {            
+  Write-Verbose "Добавляем в переменную среду Path каталог ""$_"""            
   $env:path += ";$_"            
 }
 # Добавляем функции sudo и resudo, чтобы можно было запускать/перезапускать команды с правами администратора одной командой не выходя из консоли
