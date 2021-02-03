@@ -24,6 +24,7 @@ foreach ($sid in [Security.Principal.WindowsIdentity]::GetCurrent().Groups) {
 }
 
 # Изменяем цвета текста, чтобы было легче читать.
+$PSReadlineModule = Get-Module PSReadline
 if ($IsCoreCLR) {
   $esc = "`e"
 }
@@ -31,17 +32,22 @@ else {
   $esc = $([char]0x1b)
 }
 
-Set-PSReadLineOption -Colors @{
+$Colors = @{
   Parameter = "$esc[96m"
   Operator  = "$esc[38;5;47m"
   Comment   = "$esc[92m"
   String    = "$esc[38;5;51m"
 }
 
-# Если это не PowerShell ISE и версия модуля PSReadLine выше или равна 2.2.0, то добавляем функцию автодополения на основе истории команд. 
-if ((!$psISE) -and ((Get-Module PSReadline).version -ge '2.2.0')) {
-  Set-PSReadLineOption -PredictionSource History -Colors @{ InlinePrediction = "$esc[38;2;47;112;4m" }
+$PSReadLineParams = @{}
+# Если это не PowerShell ISE и версия модуля PSReadLine выше или равна 2.2.0, то добавляем в параметры команды Set-PSReadLineOption
+# включение функции автодополения на основе истории команд и добавляем в массив Colors цвет этих подсказок
+if ((!$psISE) -and ($PSReadlineModule.version -ge '2.2.0')) {
+  $PSReadLineParams.Add('PredictionSource', 'History')
+  $Colors.Add('InlinePrediction', "$esc[38;2;47;112;4m")
 }
+$PSReadLineParams.Add('Colors', $Colors)
+Set-PSReadLineOption @PSReadLineParams
 #endregion
 
 #region Functions
@@ -131,7 +137,9 @@ Function Prompt {
       Write-Host "$front $($colortext -join '') $back" #-NoNewline #-foregroundcolor $color
     } #if Host is Windows Terminal or VS code
   } #If December 
-    
+  if ($PSReadlineModule.Version -eq '2.0.0') {
+    Write-Host "Внимание! Используемая версия модуля 'PSReadlineModule' с багом. Обновите её." -ForegroundColor Red
+  }  
   [Environment]::CurrentDirectory = (Get-Location -PSProvider FileSystem).ProviderPath            
   $path = (Get-Location).path -replace '^(.*?[^:]:\\).+(\\.+?)$', ('$1' + [char]8230 + '$2') -replace '^.+?::' -replace '^(\\\\.+?\\).+(\\.+?)$', ('$1' + [char]8230 + '$2')            
   $id = ([int](Get-History -Count 1).Id) + 1            
