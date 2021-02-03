@@ -47,7 +47,6 @@ if ((!$psISE) -and ((Get-Module PSReadline).version -ge '2.2.0')) {
 #region Functions
 # Добавляем функции sudo и resudo, чтобы можно было запускать/перезапускать команды с правами администратора одной командой не выходя из консоли
 # Источник http://www.outsidethebox.ms/20532/
-
 function resudo (
   [switch]$NoProfile
 ) {
@@ -65,12 +64,19 @@ function sudo (
   Start-Process -FilePath powershell -ArgumentList $cmdline -Verb runas
 }
 
+#Добавляем функции для удобного ежедневного открытия рандомых справок по командлетам и about топикам
+function Get-RandomAboutTopic {
+  Get-Random -input (Get-Help about*) | Get-Help -ShowWindow    
+}
+
+function Get-RandomWindowsHelp {
+  Get-Command -Module Microsoft*, Cim*, PS*, ISE | Get-Random | Get-Help -ShowWindow    
+}
+
 # Добавляем функцию приглашения, чтобы было видно с какими правами запущен процесс PowerShell.
 # А также строчку оповедение о приближени Нового Года.
 # Подробнее про оповещение тут: https://jdhitsolutions.com/blog/powershell/7956/friday-fun-a-powershell-christmas-prompt/
 # А про изменение самой строки приглашения: https://xaegr.wordpress.com/2009/06/01/myprofile/
-
-
 Function Prompt {
   if ((Get-Date).Month -eq 12 -AND (Get-Date).Day -gt 11) {
     if ($env:wt_Session -OR ($host.name -match "studio")) {
