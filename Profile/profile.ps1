@@ -138,7 +138,7 @@ Function Prompt {
     } #if Host is Windows Terminal or VS code
   } #If December 
   if ($PSReadlineModule.Version -eq '2.0.0') {
-    Write-Host "Внимание! Используемая версия модуля 'PSReadlineModule' с багом. Обновите её." -ForegroundColor Red
+    Write-Host "Внимание! Используемая версия модуля 'PSReadline' с багом. Обновите её." -ForegroundColor Red
   }  
   [Environment]::CurrentDirectory = (Get-Location -PSProvider FileSystem).ProviderPath            
   $path = (Get-Location).path -replace '^(.*?[^:]:\\).+(\\.+?)$', ('$1' + [char]8230 + '$2') -replace '^.+?::' -replace '^(\\\\.+?\\).+(\\.+?)$', ('$1' + [char]8230 + '$2')            
