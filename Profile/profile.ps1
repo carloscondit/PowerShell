@@ -50,16 +50,15 @@ else {
 }
  
 Set-PSReadLineOption -Colors @{
-  Parameter        = "$esc[96m"
-  Operator         = "$esc[38;5;47m"
-  Comment          = "$esc[92m"
-  String           = "$esc[38;5;51m"
-  InlinePrediction = "$esc[38;2;47;112;4m"
+  Parameter = "$esc[96m"
+  Operator  = "$esc[38;5;47m"
+  Comment   = "$esc[92m"
+  String    = "$esc[38;5;51m"
 }
 
 # Если это не PowerShell ISE и версия модуля PSReadLine выше или равна 2.2.0, то добавляем функцию автодополения на основе истории команд. 
 if ((!$psISE) -and ((Get-Module PSReadline).version -ge '2.2.0')) {
-  Set-PSReadLineOption -PredictionSource History
+  Set-PSReadLineOption -PredictionSource History -Colors @{ InlinePrediction = "$esc[38;2;47;112;4m" }
 }
 
 # Добавляем функцию приглашения, чтобы было видно с какими правами запущен процесс PowerShell.
