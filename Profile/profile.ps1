@@ -96,15 +96,16 @@ function Get-RandomWindowsHelp {
 # Подробнее про оповещение тут: https://jdhitsolutions.com/blog/powershell/7956/friday-fun-a-powershell-christmas-prompt/
 # А про изменение самой строки приглашения: https://xaegr.wordpress.com/2009/06/01/myprofile/
 Function Prompt {
-  if ((Get-Date).Month -eq 12 -AND (Get-Date).Day -gt 11) {
+  $now = Get-Date
+  if ($now.Month -eq 12 -AND $now.Day -gt 11) {
     if ($env:wt_Session -OR ($host.name -match "studio")) {
       #При необходимости добавляем скрипт с функциями конвертирования эмоджи
       # Подробнее тут: https://gist.github.com/jdhitsolutions/31e20c58645b59e42725f0aac0297b6f
       #. C:\Distr\Scripts\Fun\PSEmoji.ps1
       #Получаем следующий год
-      $year = ((get-date).AddYears(1)).Year
+      $year = ($now.AddYears(1)).Year
       #Получаем количество времени до нового года
-      $time = [datetime]"1 January $year" - (Get-Date)
+      $time = [datetime]"1 January $year" - $now
       #Превращаем это время в строку без милисекунд
       $timestring = $time.ToString("dd' дней и 'hh':'mm':'ss")
       #Получаем рандомную строку из декоративных символов
