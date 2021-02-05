@@ -97,15 +97,15 @@ function Get-RandomWindowsHelp {
 # А про изменение самой строки приглашения: https://xaegr.wordpress.com/2009/06/01/myprofile/
 Function Prompt {
   $now = Get-Date
-  if ($now.Month -eq 12 -AND $now.Day -gt 11) {
+  if ($now.DayOfYear -eq (Get-Date -Year $now.Year -Month 11 -Day 11).DayOfYear) {
     if ($env:wt_Session -OR ($host.name -match "studio")) {
       #При необходимости добавляем скрипт с функциями конвертирования эмоджи
       # Подробнее тут: https://gist.github.com/jdhitsolutions/31e20c58645b59e42725f0aac0297b6f
       #. C:\Distr\Scripts\Fun\PSEmoji.ps1
       #Получаем следующий год
-      $year = ($now.AddYears(1)).Year
+      $NextYear = ($now.AddYears(1)).Year
       #Получаем количество времени до нового года
-      $time = [datetime]"1 January $year" - $now
+      $time = [datetime]"1 January $NextYear" - $now
       #Превращаем это время в строку без милисекунд
       $timestring = $time.ToString("dd' дней и 'hh':'mm':'ss")
       #Получаем рандомную строку из декоративных символов
