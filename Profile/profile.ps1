@@ -70,6 +70,18 @@ function sudo (
   Start-Process -FilePath powershell -ArgumentList $cmdline -Verb runas
 }
 
+#Добавялем функцию для расшифровки кодов ошибок в текст с помощью утилиты certutil.
+#Подробнее тут https://www.outsidethebox.ms/19362/
+Function Convert-Error {
+  param ([int]$Err = "")
+  #Перед отправкой кода ошибки утилите certutil, нужно его сконвертировать
+  #в HEX. Для этого используется оператор -f и его спецификатор 'X'.
+  certutil -error $('0x{0:X}' -f $err)
+  #Альтернативный метод перевода кода ошибки в HEX, используя метод ToString
+  #со спецификатором 'X'.
+  #certutil -error $('0x'+($err).ToString("X"))
+}
+
 #Добавляем функции для удобного ежедневного открытия рандомых справок по командлетам и about топикам
 function Get-RandomAboutTopic {
   Get-Random -input (Get-Help about*) | Get-Help -ShowWindow    
