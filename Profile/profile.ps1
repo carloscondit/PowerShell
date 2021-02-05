@@ -97,7 +97,7 @@ function Get-RandomWindowsHelp {
 # А про изменение самой строки приглашения: https://xaegr.wordpress.com/2009/06/01/myprofile/
 Function Prompt {
   $now = Get-Date
-  if ($now.DayOfYear -eq (Get-Date -Year $now.Year -Month 11 -Day 11).DayOfYear) {
+  if ($now.DayOfYear -eq (Get-Date -Year $now.Year -Month 12 -Day 11).DayOfYear) {
     if ($env:wt_Session -OR ($host.name -match "studio")) {
       #При необходимости добавляем скрипт с функциями конвертирования эмоджи
       # Подробнее тут: https://gist.github.com/jdhitsolutions/31e20c58645b59e42725f0aac0297b6f
