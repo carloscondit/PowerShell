@@ -169,7 +169,7 @@ Function Prompt {
 #Если онлайн справки нет, то вместо ошибки откроет локальную справку в консоли.
 #Взял отсюда: https://community.idera.com/database-tools/powershell/powertips/b/tips/posts/better-powershell-help-part-3
 function Get-Help {
-  # clone the original param block taken from Get-Help
+  #Клонируем блок параметров из оригинального командлета Get-Help
   [CmdletBinding(DefaultParameterSetName = 'AllUsersView', HelpUri = 'https://go.microsoft.com/fwlink/?LinkID=113316')]
   param(
     [Parameter(Position = 0, ValueFromPipelineByPropertyName)]
@@ -217,43 +217,29 @@ function Get-Help {
     $ShowWindow
   )
 
+  #блоки begin, process, и end нужны для работы конвейера
   begin {
-    # we do the adjustments only when the user has submitted
-    # the -Name, -Category, and -Online parameters
-    
-    if ( (@($PSBoundParameters.Keys) -ne 'Name' -ne 'Category' -ne 'Online').
-      Count -eq 0
-    ) {
-      # check whether there IS online help available at all
-            
-      # retrieve the help URI
+    #Мы будем вносить изменения в команду только если указаны параметры
+    #-Name, -Category, и -Online
+    if ( (@($PSBoundParameters.Keys) -ne 'Name' -ne 'Category' -ne 'Online').Count -eq 0) {
+      #Проверяем доступность онлайн справки
       $help = Microsoft.PowerShell.Core\Get-Command -Name $Name 
-      # reset the parameter -Online based on availability of online help
-      $PSBoundParameters['Online'] =
-      [string]::IsNullOrWhiteSpace($help.HelpUri) -eq $false
-    }
+      #Меняем значение парметра -Online в зависимости от доступности онлайн справки
+      $PSBoundParameters['Online'] = [string]::IsNullOrWhiteSpace($help.HelpUri) -eq $false
+    }#if parameters exist
     
-    # once the parameter adjustment has been processed, call the original
-    # Get-Help cmdlet with the parameters found in $PSBoundParameters
-    
-    # turn the original Get-Help cmdlet into a proxy command receiving the
-    # adjusted parameters
-    # with a proxy command, you can invoke its begin, process, and end
-    # logic separately. That's required to preserve pipeline functionality
+    #После внесения изменений в параметры вызываем оригинальнуый команлет Get-Help с
+    #параметрами из $PSBoundParameters
     $cmd = Get-Command -Name 'Get-Help' -CommandType Cmdlet
-    $proxy = { & $cmd @PSBoundParameters }.
-    GetSteppablePipeline($myInvocation.CommandOrigin)
-        
-    # now, call its default begin, process, and end blocks in the appropriate 
-    # script blocks so it integrates in real-time pipelines
+    $proxy = { & $cmd @PSBoundParameters }.GetSteppablePipeline($myInvocation.CommandOrigin)
     $proxy.Begin($PSCmdlet)
-  }
+  }#begin
     
   process { $proxy.Process($_) }
     
   end { $proxy.End() }
     
-  # use the original help taken from Get-Help for this function
+  #справка от оригинального командлета Get-Help для этой прокси-функции
   <#
       .ForwardHelpTargetName Microsoft.PowerShell.Core\Get-Help
       .ForwardHelpCategory Cmdlet
