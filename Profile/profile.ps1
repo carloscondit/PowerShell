@@ -164,4 +164,99 @@ Function Prompt {
   write-host "]" -ForegroundColor $Color -NonewLine            
   " "
 } #end function Prompt
+
+#Это прокси-функция для Get-Help. Она проверяет наличие у командлета онлайн справки и если такая есть, то по умолчанию открывате ее.
+#Если онлайн справки нет, то вместо ошибки откроет локальную справку в консоли.
+#Взял отсюда: https://community.idera.com/database-tools/powershell/powertips/b/tips/posts/better-powershell-help-part-3
+function Get-Help {
+  # clone the original param block taken from Get-Help
+  [CmdletBinding(DefaultParameterSetName = 'AllUsersView', HelpUri = 'https://go.microsoft.com/fwlink/?LinkID=113316')]
+  param(
+    [Parameter(Position = 0, ValueFromPipelineByPropertyName)]
+    [string]
+    $Name,
+
+    [Parameter(ParameterSetName = 'Online', Mandatory)]
+    [switch]
+    $Online,
+
+    [ValidateSet('Alias', 'Cmdlet', 'Provider', 'General', 'FAQ', 'Glossary', 'HelpFile', 'ScriptCommand', 'Function', 'Filter', 'ExternalScript', 'All', 'DefaultHelp', 'Workflow', 'DscResource', 'Class', 'Configuration')]
+    [string[]]
+    $Category,
+
+    [string]
+    $Path,
+
+    [string[]]
+    $Component,
+
+    [string[]]
+    $Functionality,
+
+    [string[]]
+    $Role,
+
+    [Parameter(ParameterSetName = 'DetailedView', Mandatory)]
+    [switch]
+    $Detailed,
+
+    [Parameter(ParameterSetName = 'AllUsersView')]
+    [switch]
+    $Full,
+
+    [Parameter(ParameterSetName = 'Examples', Mandatory)]
+    [switch]
+    $Examples,
+
+    [Parameter(ParameterSetName = 'Parameters', Mandatory)]
+    [string]
+    $Parameter,
+
+    [Parameter(ParameterSetName = 'ShowWindow', Mandatory)]
+    [switch]
+    $ShowWindow
+  )
+
+  begin {
+    # we do the adjustments only when the user has submitted
+    # the -Name, -Category, and -Online parameters
+    
+    if ( (@($PSBoundParameters.Keys) -ne 'Name' -ne 'Category' -ne 'Online').
+      Count -eq 0
+    ) {
+      # check whether there IS online help available at all
+            
+      # retrieve the help URI
+      $help = Microsoft.PowerShell.Core\Get-Command -Name $Name 
+      # reset the parameter -Online based on availability of online help
+      $PSBoundParameters['Online'] =
+      [string]::IsNullOrWhiteSpace($help.HelpUri) -eq $false
+    }
+    
+    # once the parameter adjustment has been processed, call the original
+    # Get-Help cmdlet with the parameters found in $PSBoundParameters
+    
+    # turn the original Get-Help cmdlet into a proxy command receiving the
+    # adjusted parameters
+    # with a proxy command, you can invoke its begin, process, and end
+    # logic separately. That's required to preserve pipeline functionality
+    $cmd = Get-Command -Name 'Get-Help' -CommandType Cmdlet
+    $proxy = { & $cmd @PSBoundParameters }.
+    GetSteppablePipeline($myInvocation.CommandOrigin)
+        
+    # now, call its default begin, process, and end blocks in the appropriate 
+    # script blocks so it integrates in real-time pipelines
+    $proxy.Begin($PSCmdlet)
+  }
+    
+  process { $proxy.Process($_) }
+    
+  end { $proxy.End() }
+    
+  # use the original help taken from Get-Help for this function
+  <#
+      .ForwardHelpTargetName Microsoft.PowerShell.Core\Get-Help
+      .ForwardHelpCategory Cmdlet
+  #>
+}#end proxy-function Get-Help
 #endregion
