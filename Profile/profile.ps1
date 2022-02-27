@@ -1,4 +1,4 @@
-<#
+﻿<#
 Как использовать один файл для всех версий PowerShell. TL;DR Dot-sourcing
 https://www.networkadm.in/configure-one-powershell-profile-for-many-users/
 #>
