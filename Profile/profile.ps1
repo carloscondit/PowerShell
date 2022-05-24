@@ -57,6 +57,15 @@ if ((!$psISE) -and ($PSReadlineModule.version -ge '2.2.0')) {
 }
 $PSReadLineParams.Add('Colors', $Colors)
 Set-PSReadLineOption @PSReadLineParams
+
+# Добавляем функцию PSReadLine, которая не будет сохранять пароли в историю модуля
+# https://twitter.com/lee_holmes/status/1172640465767682048
+Set-PSReadLineOption -AddToHistoryHandler {
+  param([string]$line)
+
+  $sensitive = "password|asplaintext|token|key|secret"
+  return ($line -notmatch $sensitive)
+}
 #endregion
 
 #region Functions
