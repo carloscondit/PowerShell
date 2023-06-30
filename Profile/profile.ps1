@@ -66,6 +66,9 @@ Set-PSReadLineOption -AddToHistoryHandler {
   $sensitive = "password|asplaintext|token|key|secret"
   return ($line -notmatch $sensitive)
 }
+
+#Добавляем на клавишу Enter функцию по проверке синтаксиса команды перед ее выполнением
+Set-PSReadLineKeyHandler -Chord 'Enter' -Function ValidateAndAcceptLine
 #endregion
 
 #region Functions
